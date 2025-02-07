@@ -95,15 +95,15 @@ app.get("/api/get-cart-products", async (req, res) => {
 //UPDATE WISHLIST
 app.put("/api/update-wishlist/:productId", async (req, res) => {
   try {
+    const product = await Product.findById(req.params.productId);
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.productId,
-      [{ $set: { isWishlisted: { $not: "$isWishlisted" } } }],
+      { $set: { isWishlisted: !product.isWishlisted } },
       { new: true }
     );
-
     res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(404).json({ error: "UNABLE TO FIND THE PRODUCTS" });
+    res.status(404).json({ error: "UNABLE TO UPDATE THE PRODUCT" });
   }
 });
 
