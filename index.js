@@ -8,6 +8,7 @@ const { initialiseDatabase } = require("./db/db.connect.js");
 const Product = require("./models/product.model.js");
 const Address = require("./models/address.model.js");
 const Profile = require("./models/profile.model.js");
+const Order = require("./models/order.model.js");
 
 initialiseDatabase();
 
@@ -28,14 +29,14 @@ app.get("/", (req, res) => {
 
 // const addDataToDb = async (data, obj) => {
 //   try {
-//     const dataAdded = obj.insertMany(data);
+//     const dataAdded = await obj.insertMany(data);
 //     console.log("Data added successfully: ", dataAdded);
 //   } catch (error) {
 //     console.log("UNABLE TO ADD THE DATA TO DB", error);
 //   }
 // };
 
-// addDataToDb(profiles, Profile);
+// addDataToDb(mockPcBuilds, Order);
 
 //READ ALL PRODUCTS
 app.get("/api/get-all-products", async (req, res) => {
@@ -212,7 +213,7 @@ app.put("/api/put-profile/:profileID", async (req, res) => {
 
     res.status(200).json(updatedProfile);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(404).json({ error: "UNABLE TO UPDATE THE PROFILE" });
   }
 });
@@ -230,6 +231,28 @@ app.delete("/api/delete-profile/:profileID", async (req, res) => {
     res.status(404).json({ error: "UNABLE TO DELETE THE PROFILE" });
   }
 });
+
+//POST ORDER
+app.post("/api/post-order", async (req, res) => {
+  try {
+    const newOrder = new Order(req.body);
+    const savedOrder = await newOrder.save();
+
+    res.status(201).json(savedOrder)
+  } catch (error) {
+    res.status(404).json({ error: "UNABLE TO POST THE ORDER" });
+  }
+});
+
+app.get("/api/get-orders" , async (req, res) => {
+  try {
+    const orders = await Order.find()
+
+    res.status(200).json(orders)
+  } catch (error) {
+    res.status(500).json({error: "UNABLE TO GET THE ORDERS"})
+  }
+})
 
 const PORT = 3000;
 app.listen(PORT, () => {
