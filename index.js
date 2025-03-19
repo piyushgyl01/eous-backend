@@ -16,7 +16,7 @@ app.use(express.json());
 
 const cors = require("cors");
 const corsOptions = {
-  origin: "*",
+  origin: ["http://localhost:5173", "https://frontend-03-phi.vercel.app"],
   credentials: true,
   optionSuccessStatus: 200,
 };
